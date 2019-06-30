@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>demo01</title>
+    <script src="vue.min.js"></script>
+    <link rel="stylesheet" href="css.css">
+</head>
+<body>
+<div id="app">
+    <div class="nav">
+        id:<input type="text" v-model="id">
+        name:<input type="text" v-model="name" @keyup.enter="add()">
+        <input type="button" value="添加" @click="add()" class="button">
+        <input type="button" class="search" value="搜索">
+        <input type="text" v-model="keywords" value="关键字" v-focus v-color="'red'">
+    </div>
+    <input type="reset" class="reset" @click="reset">
+    <div class="container">
+        <table>
+            <tr>
+                <th>id</th>
+                <th>name</th>
+                <th>time</th>
+                <th>operate</th>
+            </tr>
+            <!--通过关键字查找对象数组的方法-->
+            <tr v-for="item in search(keywords)" :key="item.id">
+                <td>{{item.id}}</td>
+                <td>{{item.name}}</td>
+                <td>{{item.time | timeFormat }}</td>
+                <td>
+                    <a href="" @click.prevent="del(item.id)">删除</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<script>
+    Vue.directive('focus',{
+       inserted:function (el) {
+           el.focus();
+       }
+    });
+    Vue.directive('color',{
+        bind: function (el,binding) {
+            //el.style.color = 'red'
+            el.style.color = binding.value;
+            console.log(binding.value)
+        }
+    });
+    Vue.filter('timeFormat',function (time) {
+       var dt = new  Date(time);
+       var year = dt.getFullYear();
+       var month =(dt.getMonth()+1);
+       var day = dt.getDay();
+       /*if (month<10) {
+           month = '0'+month;
+       }
+       switch (day) {
+            case 0: day='星期天';
+                break;
+            case 1: day='星期一';
+                break;
+            case 2: day='星期二';
+                break;
+            case 3: day='星期三';
+                break;
+            case 4: day='星期四';
+                break;
+            case 5: day='星期五';
+                break;
+            case 6: day='星期六';
+                break;
+        }*/
+       /*return '$(year)+$(month)+$(day)'*/
+       return year+'-'+month+'-'+day;
+    });
+    new Vue({
+        el:'#app',
+        data: {
+            id:'',
+            name:'',
+            keywords:'',
+            list:[
+                {id:1,name:'宝马',time:new Date()},
+                {id:2,name:'奔驰',time:new Date()},
+                {id:3,name:'法拉利',time:new Date()}
+            ]
+        },
+        methods:{
+            add(){
+                var car = {id:this.id,name:this.name,time:new Date()};
+                this.list.push(car);
+                this.id = '';
+                this.name = '';
+            },
+            del(id){
+                //findIndex的用法是查找指定的id在哪一个索引里产生，然后返回这个索引值
+               // var index = this.list.findIndex(item => {
+               //     if (item.id == id) {
+               //         return true;
+               //     }
+               // });
+                //console.log(index)
+                //this.list.splice(index,1);
+
+                //this.list.forEach((item,index) => {
+                //    if (item.id == id) {
+                //        this.list.splice(index,1);
+                //    }
+                //})
+
+                this.list.filter((item,i) => {
+                    if (item.id == id) {
+                        this.list.splice(i,1)
+                    }
+                })
+            },
+            search(keywords){
+                var newlist = [];
+                this.list.forEach(item =>{
+                    if (item.name.indexOf(keywords) != -1) {
+                        console.log(keywords);
+                        newlist.push(item);
+                    }
+                });
+                //在这里includes()方法并不存在呢，但是这确实是一个方法
+               // newlist = this.list.filter(item => {
+               //    if (this.item.includes(keywords)) {
+               //        return item;
+               //    }
+               // });
+                return newlist;
+            },
+            reset(){
+                var newList = [
+                    {id:1,name:'宝马',time:new Date()},
+                    {id:2,name:'奔驰',time:new Date()},
+                    {id:3,name:'法拉利',time:new Date()}
+                ];
+                if (this.list.length !=3) {
+                    this.list = newList;
+                    //alert(this.list.length)
+                } else if (this.keywords.length != 0) {
+                    this.keywords = '';
+                }
+                //
+            }
+        }
+    })
+</script>
+</body>
+</html>

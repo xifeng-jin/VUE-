@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="vue.min.js"></script>
+</head>
+<body>
+<div id="app">
+    <!--过滤器可以使用多个-->
+    <p>{{msg | msgFormat('疯狂') |test }}</p>
+</div>
+<div id="app2">
+    <p>{{ msg | msgFormat('ok')}}</p>
+</div>
+<script>
+    Vue.filter('msgFormat',function (msg,word) {
+        //字符串的替代可以使用正则
+       return msg.replace(/单纯/g,word)
+    });
+    Vue.filter('test',function (msg) {
+        return msg + '==>我是添加的'
+    });
+    var vm = new Vue({
+        el:'#app',
+        data: {
+            msg:'曾经我也是世界上最单纯的人，单纯的令人发指'
+        },
+        methods:{
+
+        }
+    });
+    var vm2 = new Vue({
+        el:'#app2',
+        data: {
+            msg:'曾经我也是世界上最单纯的人，单纯的令人发指'
+        },
+        methods: {
+
+        },
+        filters:{
+            msgFormat: function (msg, word) {
+                return msg.replace(/的/g,word)
+            }
+        }
+    })
+</script>
+</body>
+</html>

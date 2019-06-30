@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>demo03</title>
+    <script src="vue.min.js"></script>
+</head>
+<body>
+<div id="app">
+    <p v-fontsize="40" v-fontweight="'bold'" v-color="'red'">{{msg}}</p>
+    <p v-fontweight="'bold'" v-fontSize="20" V-COLOR="'GREEN'">我是第二个msg：{{msg}}</p>
+</div>
+<script>
+    var vm = new Vue({
+        el:'#app',
+        data:{
+            msg:'我是一个例子'
+        },
+        methods: {
+
+        },
+        directives: {
+            'color': {
+                bind:function (el, a) {
+                    el.style.color = a.value;
+                }
+            },
+            'fontsize': function (el, binding) {
+                el.style.fontSize = binding.value+'px';
+            },
+            'fontweight': function (el, binding) {
+                el.style.fontWeight = binding.value;
+            }
+        }
+    })
+</script>
+</body>
+</html>
